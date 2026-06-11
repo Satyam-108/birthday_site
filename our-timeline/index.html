@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Journey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/new-pages.css">
+  <style>
+    .memory-counts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .memory-count {
+      border-radius: 14px;
+      padding: 10px 8px;
+      text-align: center;
+      background: rgba(255, 250, 247, 0.72);
+      border: 1px solid rgba(190, 139, 133, 0.14);
+      box-shadow: 0 8px 16px rgba(112, 75, 75, 0.06);
+    }
+
+    .memory-count strong {
+      display: block;
+      font-size: 24px;
+      color: #965f6b;
+      line-height: 1;
+    }
+
+    .memory-count span {
+      display: block;
+      margin-top: 4px;
+      font-size: 15px;
+      color: #765652;
+    }
+
+    .vault-open {
+      margin-top: 14px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 40000;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(58, 42, 40, 0.70);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal.show {
+      display: grid;
+      animation: fadeIn .25s ease;
+    }
+
+    .modal-panel {
+      position: relative;
+      width: min(100%, 920px);
+      max-height: 88vh;
+      overflow: auto;
+      border-radius: 20px;
+      padding: clamp(16px, 3vw, 28px);
+      background:
+        radial-gradient(circle at top left, rgba(231, 169, 180, 0.22), transparent 34%),
+        rgba(255, 250, 247, 0.96);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.24);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      color: #fff;
+      background: #c95f7b;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+    }
+
+    .modal-title {
+      padding-right: 42px;
+      font-family: "Caveat", cursive;
+      font-size: clamp(36px, 6vw, 68px);
+      color: #935d69;
+      line-height: 1;
+    }
+
+    .modal-date {
+      margin-top: 4px;
+      font-size: clamp(18px, 2vw, 24px);
+      color: #8d6965;
+    }
+
+    .memory-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 18px 0 14px;
+    }
+
+    .memory-tab {
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 15px;
+      color: #704f4a;
+      background: rgba(255,255,255,0.68);
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(112, 75, 75, 0.07);
+    }
+
+    .memory-tab.active {
+      color: #fff;
+      background: linear-gradient(135deg, #e58ca0, #c95f7b);
+    }
+
+    .memory-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      min-height: 180px;
+    }
+
+    .memory-tile {
+      position: relative;
+      overflow: hidden;
+      min-height: 190px;
+      border: 0;
+      border-radius: 16px;
+      padding: 0;
+      background: rgba(255,255,255,0.72);
+      box-shadow: 0 12px 22px rgba(112, 75, 75, 0.08);
+      cursor: pointer;
+      animation: softReveal .36s ease;
+    }
+
+    .memory-tile img,
+    .memory-tile video {
+      width: 100%;
+      height: 220px;
+      display: block;
+      object-fit: cover;
+      background: #2b2524;
+      transition: transform .35s ease;
+    }
+
+    .memory-tile:hover img,
+    .memory-tile:hover video {
+      transform: scale(1.04);
+    }
+
+    .empty-memory {
+      grid-column: 1 / -1;
+      display: grid;
+      place-items: center;
+      min-height: 180px;
+      border-radius: 16px;
+      color: #8d6965;
+      background: rgba(255,255,255,0.55);
+      border: 1px dashed rgba(190, 139, 133, 0.32);
+      font-size: clamp(20px, 2vw, 26px);
+    }
+
+    .viewer {
+      position: fixed;
+      inset: 0;
+      z-index: 50000;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(35, 28, 27, 0.82);
+      backdrop-filter: blur(4px);
+    }
+
+    .viewer.show {
+      display: grid;
+      animation: fadeIn .2s ease;
+    }
+
+    .viewer-panel {
+      position: relative;
+      width: min(100%, 900px);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(255, 250, 247, 0.96);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.24);
+    }
+
+    .viewer-panel img,
+    .viewer-panel video {
+      width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      display: block;
+      border-radius: 12px;
+      background: #231e1d;
+    }
+
+    .viewer-close,
+    .viewer-nav {
+      border: 0;
+      color: #fff;
+      background: #c95f7b;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+    }
+
+    .viewer-close {
+      position: absolute;
+      top: -14px;
+      right: -10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .viewer-nav {
+      position: absolute;
+      top: 50%;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+    }
+
+    .viewer-prev {
+      left: -12px;
+    }
+
+    .viewer-next {
+      right: -12px;
+    }
+
+    @media (max-width: 760px) {
+      .memory-counts,
+      .memory-gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .memory-tile img,
+      .memory-tile video {
+        height: 260px;
+      }
+
+      .viewer-nav {
+        top: auto;
+        bottom: -54px;
+        transform: none;
+      }
+
+      .viewer-prev {
+        left: calc(50% - 52px);
+      }
+
+      .viewer-next {
+        right: calc(50% - 52px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="love-page">
+    <div class="love-wrap">
+      <nav class="love-nav" aria-label="Mahi pages">
+        <a href="../index.html">Birthday</a>
+        <a href="../things-i-never-said/">Confessions</a>
+        <a class="active" href="../our-timeline/">Timeline</a>
+        <a href="../memory-vault/">Memory Vault</a>
+        <a href="../open-when/">Open When</a>
+        <a href="../mahi-ai/">Mahi AI</a>
+        <a href="../future-mahi/">Future Mahi</a>
+      </nav>
+
+      <section class="love-hero">
+        <div>
+          <p class="eyebrow">Every little beginning became a memory</p>
+          <h1>Our Journey</h1>
+          <p class="hero-copy">Some moments are small only until the heart starts remembering them.</p>
+        </div>
+      </section>
+
+      <section class="love-card">
+        <div class="timeline" id="timeline"></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="modal" id="memoryModal" aria-hidden="true">
+    <div class="modal-panel">
+      <button class="modal-close" id="modalClose" aria-label="Close">x</button>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-date" id="modalDate"></div>
+      <div class="memory-tabs" id="memoryTabs"></div>
+      <div class="memory-gallery" id="memoryGallery"></div>
+    </div>
+  </div>
+
+  <div class="viewer" id="viewer" aria-hidden="true">
+    <div class="viewer-panel" id="viewerPanel">
+      <button class="viewer-close" id="viewerClose" aria-label="Close">x</button>
+      <button class="viewer-nav viewer-prev" id="viewerPrev" aria-label="Previous">&lsaquo;</button>
+      <button class="viewer-nav viewer-next" id="viewerNext" aria-label="Next">&rsaquo;</button>
+      <img id="viewerImage" alt="Timeline memory">
+      <video id="viewerVideo" controls></video>
+    </div>
+  </div>
+
+  <script src="../shared/new-pages.js"></script>
+  <script>
+    const timelineEvents = [
+      {
+        title: "First Message",
+        date: "The first hello",
+        description: "A simple start, but somehow it opened a door I still feel grateful for.",
+        photos: ["../23.jpeg","../24.jpeg","../25.jpeg","../26.jpeg","../27.jpeg"],
+        videos: [],
+        screenshots: ["../img3.jpg"],
+      },
+      {
+        title: "First I Miss You",
+        date: "A small sentence, a big feeling",
+        description: "A small sentence that said much more than it looked like.",
+        photos: ["../32.jpeg","../31.jpeg","../28.jpeg","../29.jpeg","../30.jpeg"],
+        videos: ["../36.mp4","../35.mp4","../37.mp4"],
+        screenshots: ["../img3.jpg"]
+      },
+      {
+        title: "First I Love You Too",
+        date: "7 June, 5:48 AM",
+        description: "Most people would see a time. I see the moment you made me the happiest guy alive.",
+        photos: ["../4.jpeg","../22.jpeg"],
+        videos: [],
+        screenshots: ["../img3.jpg"]
+      },
+      {
+        title: "Cheesecake & Rasgulla Day",
+        date: "Sweetness saved properly",
+        description: "Sweet things, sweeter memory, and one more reason this journey feels ours.",
+        photos: ["../img1.jpg","../40.jpeg"],
+        videos: [],
+        screenshots: []
+      },
+      {
+        title: "Favorite Fit Check",
+        date: "A beautiful moment",
+        description: "A moment that deserved a better reaction, because you looked genuinely beautiful.",
+        photos: ["../img1.jpg","../30.jpeg"],
+        videos: ["../33.mp4","../34.mp4","../39.mp4",],
+        screenshots: []
+      },
+      {
+        title: "Mahi Being Mahi",
+        date: "My favorite kind of ordinary",
+        description: "Not a single date, just those little things you do that stay in my mind.",
+        photos: ["../img2.jpg"],
+        videos: ["../33.mp4","../37.mp4","../38.mp4"],
+        screenshots: ["../img3.jpg"]
+      },
+      {
+        title: "To Be Continued",
+        date: "Still writing",
+        description: "Because the best part is that the story still has pages left.",
+        photos: [],
+        videos: [],
+        screenshots: []
+      }
+    ];
+
+    const labels = {
+      photos: "&#128248; Photo Count",
+      videos: "&#127909; Video Count",
+      screenshots: "&#128140; Screenshot Count"
+    };
+
+    const timeline = document.getElementById("timeline");
+    const memoryModal = document.getElementById("memoryModal");
+    const modalClose = document.getElementById("modalClose");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDate = document.getElementById("modalDate");
+    const memoryTabs = document.getElementById("memoryTabs");
+    const memoryGallery = document.getElementById("memoryGallery");
+    const viewer = document.getElementById("viewer");
+    const viewerPanel = document.getElementById("viewerPanel");
+    const viewerImage = document.getElementById("viewerImage");
+    const viewerVideo = document.getElementById("viewerVideo");
+    const viewerClose = document.getElementById("viewerClose");
+    const viewerPrev = document.getElementById("viewerPrev");
+    const viewerNext = document.getElementById("viewerNext");
+
+    let activeEvent = null;
+    let activeTab = "photos";
+    let activeItems = [];
+    let activeViewerIndex = 0;
+    let activeViewerType = "image";
+    let touchStartX = 0;
+
+    function renderTimeline() {
+      timeline.innerHTML = timelineEvents.map((event, index) => `
+        <article class="timeline-item" style="animation-delay:${index * 0.08}s">
+          <span class="timeline-dot"></span>
+          <div class="timeline-box">
+            <div class="timeline-title">${event.title}</div>
+            <div class="timeline-copy">${event.description}</div>
+            <div class="memory-counts">
+              ${renderCount("photos", event.photos.length)}
+              ${renderCount("videos", event.videos.length)}
+              ${renderCount("screenshots", event.screenshots.length)}
+            </div>
+            <button class="soft-btn vault-open" data-event-index="${index}">Open Memory Vault</button>
+          </div>
+        </article>
+      `).join("");
+
+      document.querySelectorAll("[data-event-index]").forEach((button) => {
+        button.addEventListener("click", () => openMemoryModal(Number(button.dataset.eventIndex)));
+      });
+    }
+
+    function renderCount(type, count) {
+      return `
+        <div class="memory-count">
+          <strong>${count}</strong>
+          <span>${labels[type]}</span>
+        </div>
+      `;
+    }
+
+    function openMemoryModal(index) {
+      activeEvent = timelineEvents[index];
+      activeTab = "photos";
+      modalTitle.textContent = activeEvent.title;
+      modalDate.textContent = activeEvent.date;
+      memoryModal.classList.add("show");
+      memoryModal.setAttribute("aria-hidden", "false");
+      renderTabs();
+      renderGallery();
+    }
+
+    function closeMemoryModal() {
+      memoryModal.classList.remove("show");
+      memoryModal.setAttribute("aria-hidden", "true");
+    }
+
+    function renderTabs() {
+      memoryTabs.innerHTML = ["photos", "videos", "screenshots"].map((type) => `
+        <button class="memory-tab ${activeTab === type ? "active" : ""}" data-tab="${type}">
+          ${labels[type]} (${activeEvent[type].length})
+        </button>
+      `).join("");
+
+      document.querySelectorAll("[data-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeTab = button.dataset.tab;
+          renderTabs();
+          renderGallery();
+        });
+      });
+    }
+
+    function renderGallery() {
+      const items = activeEvent[activeTab];
+      if (!items.length) {
+        memoryGallery.innerHTML = `<div class="empty-memory">No ${activeTab} added yet. This memory has space waiting.</div>`;
+        return;
+      }
+
+      memoryGallery.innerHTML = items.map((src, index) => {
+        if (activeTab === "videos") {
+          return `
+            <button class="memory-tile" data-open-video="${index}">
+              <video preload="metadata">
+                <source src="${src}" type="video/mp4">
+              </video>
+            </button>
+          `;
+        }
+
+        return `
+          <button class="memory-tile" data-open-image="${index}">
+            <img src="${src}" loading="lazy" alt="${activeEvent.title} ${activeTab} ${index + 1}">
+          </button>
+        `;
+      }).join("");
+
+      document.querySelectorAll("[data-open-image]").forEach((button) => {
+        button.addEventListener("click", () => openViewer("image", Number(button.dataset.openImage)));
+      });
+
+      document.querySelectorAll("[data-open-video]").forEach((button) => {
+        button.addEventListener("click", () => openViewer("video", Number(button.dataset.openVideo)));
+      });
+    }
+
+    function openViewer(type, index) {
+      activeViewerType = type;
+      activeViewerIndex = index;
+      activeItems = activeEvent[activeTab];
+      renderViewer();
+      viewer.classList.add("show");
+      viewer.setAttribute("aria-hidden", "false");
+    }
+
+    function renderViewer() {
+      const src = activeItems[activeViewerIndex];
+      viewerVideo.pause();
+      viewerVideo.removeAttribute("src");
+      viewerImage.removeAttribute("src");
+
+      if (activeViewerType === "video") {
+        viewerImage.style.display = "none";
+        viewerVideo.style.display = "block";
+        viewerVideo.src = src;
+        viewerVideo.play().catch(() => {});
+      } else {
+        viewerVideo.style.display = "none";
+        viewerImage.style.display = "block";
+        viewerImage.src = src;
+      }
+
+      const showNav = activeItems.length > 1;
+      viewerPrev.style.display = showNav ? "block" : "none";
+      viewerNext.style.display = showNav ? "block" : "none";
+    }
+
+    function closeViewer() {
+      viewer.classList.remove("show");
+      viewer.setAttribute("aria-hidden", "true");
+      viewerVideo.pause();
+      viewerVideo.removeAttribute("src");
+      viewerImage.removeAttribute("src");
+    }
+
+    function moveViewer(direction) {
+      if (!activeItems.length) return;
+      activeViewerIndex = (activeViewerIndex + direction + activeItems.length) % activeItems.length;
+      renderViewer();
+    }
+
+    modalClose.addEventListener("click", closeMemoryModal);
+    memoryModal.addEventListener("click", (event) => {
+      if (event.target === memoryModal) closeMemoryModal();
+    });
+
+    viewerClose.addEventListener("click", closeViewer);
+    viewerPrev.addEventListener("click", () => moveViewer(-1));
+    viewerNext.addEventListener("click", () => moveViewer(1));
+    viewer.addEventListener("click", (event) => {
+      if (event.target === viewer) closeViewer();
+    });
+
+    viewerPanel.addEventListener("touchstart", (event) => {
+      touchStartX = event.changedTouches[0].clientX;
+    }, { passive: true });
+
+    viewerPanel.addEventListener("touchend", (event) => {
+      const delta = event.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(delta) > 45) moveViewer(delta > 0 ? -1 : 1);
+    }, { passive: true });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeViewer();
+        closeMemoryModal();
+      }
+      if (viewer.classList.contains("show") && event.key === "ArrowLeft") moveViewer(-1);
+      if (viewer.classList.contains("show") && event.key === "ArrowRight") moveViewer(1);
+    });
+
+    renderTimeline();
+  </script>
+</body>
+</html>

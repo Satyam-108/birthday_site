@@ -1,0 +1,431 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #ead9d2;
+  color: #6e514d;
+  font-family: "Patrick Hand", cursive;
+}
+
+button,
+textarea,
+input {
+  font: inherit;
+}
+
+.love-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(255, 247, 244, 0.84), rgba(238, 216, 209, 0.88)),
+    url("../back2.png") center / cover fixed no-repeat;
+  padding: 18px;
+}
+
+.love-wrap {
+  width: min(100%, 960px);
+  margin: 0 auto;
+}
+
+.love-nav {
+  position: sticky;
+  top: 10px;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 10px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: rgba(255, 250, 247, 0.68);
+  border: 1px solid rgba(173, 126, 121, 0.18);
+  box-shadow: 0 12px 28px rgba(111, 76, 73, 0.08);
+  backdrop-filter: blur(4px);
+}
+
+.love-nav a {
+  color: #7a5752;
+  text-decoration: none;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.48);
+  transition: transform .2s ease, background .2s ease;
+}
+
+.love-nav a:hover,
+.love-nav a.active {
+  transform: translateY(-1px);
+  background: rgba(226, 154, 169, 0.34);
+}
+
+.love-hero,
+.love-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(231, 169, 180, 0.22), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(242, 209, 155, 0.24), transparent 34%),
+    rgba(255, 250, 247, 0.78);
+  border: 1px solid rgba(190, 139, 133, 0.18);
+  box-shadow: 0 18px 38px rgba(112, 75, 75, 0.10);
+}
+
+.love-hero {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: clamp(34px, 6vw, 72px) clamp(18px, 5vw, 64px);
+}
+
+.love-hero::before,
+.love-hero::after,
+.love-card::before {
+  content: "\2766";
+  position: absolute;
+  color: rgba(151, 99, 109, 0.17);
+  font-size: 74px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.love-hero::before {
+  left: 24px;
+  top: 18px;
+  transform: rotate(-14deg);
+}
+
+.love-hero::after {
+  right: 28px;
+  bottom: 16px;
+  transform: rotate(12deg);
+}
+
+.love-card::before {
+  right: 22px;
+  top: 16px;
+  font-size: 54px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: clamp(17px, 2vw, 22px);
+  color: #986872;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-family: "Caveat", cursive;
+  color: #935d69;
+  line-height: 1;
+}
+
+h1 {
+  font-size: clamp(48px, 9vw, 96px);
+}
+
+h2 {
+  font-size: clamp(34px, 5vw, 58px);
+}
+
+.hero-copy {
+  max-width: 660px;
+  margin: 14px auto 0;
+  font-size: clamp(20px, 2.4vw, 28px);
+  line-height: 1.45;
+}
+
+.love-card {
+  margin-top: 18px;
+  padding: clamp(20px, 4vw, 38px);
+}
+
+.soft-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 24px;
+  color: #fff;
+  background: linear-gradient(135deg, #e58ca0, #c95f7b);
+  box-shadow: 0 10px 22px rgba(145, 86, 98, 0.16);
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.soft-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 13px 26px rgba(145, 86, 98, 0.18);
+}
+
+.gold-btn {
+  color: #684b27;
+  background: linear-gradient(135deg, #f3d7a2, #e6b96f);
+}
+
+.confession-card {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: clamp(24px, 5vw, 54px);
+}
+
+.confession-text {
+  font-family: "Caveat", cursive;
+  font-size: clamp(34px, 5.5vw, 68px);
+  line-height: 1.16;
+  color: #704f4a;
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.confession-text.show {
+  animation: softReveal .65s ease forwards;
+}
+
+.confession-controls,
+.ai-moods {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.counter {
+  margin-top: 10px;
+  text-align: center;
+  color: #9b7370;
+}
+
+.timeline {
+  position: relative;
+  margin: 10px auto 0;
+  max-width: 760px;
+  padding-left: 22px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 21px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  background: linear-gradient(#e4a1b0, #e8bf7e);
+}
+
+.timeline-item {
+  position: relative;
+  margin: 0 0 18px;
+  padding-left: 30px;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: softReveal .75s ease forwards;
+}
+
+.timeline-item:nth-child(2) { animation-delay: .12s; }
+.timeline-item:nth-child(3) { animation-delay: .24s; }
+.timeline-item:nth-child(4) { animation-delay: .36s; }
+.timeline-item:nth-child(5) { animation-delay: .48s; }
+.timeline-item:nth-child(6) { animation-delay: .60s; }
+.timeline-item:nth-child(7) { animation-delay: .72s; }
+
+.timeline-dot {
+  position: absolute;
+  left: -7px;
+  top: 9px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d9768d;
+  box-shadow: 0 0 0 7px rgba(217, 118, 141, 0.15);
+}
+
+.timeline-box {
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.66);
+  border: 1px solid rgba(190, 139, 133, 0.16);
+}
+
+.timeline-title {
+  font-family: "Caveat", cursive;
+  font-size: clamp(28px, 4vw, 42px);
+  color: #965f6b;
+}
+
+.timeline-copy {
+  font-size: clamp(18px, 2vw, 23px);
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+.open-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.open-card {
+  min-height: 158px;
+  border: 0;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+  color: #6e514d;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.78), rgba(246, 224, 218, 0.78));
+  box-shadow: 0 12px 22px rgba(112, 75, 75, 0.08);
+  cursor: pointer;
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+
+.open-card:hover {
+  transform: translateY(-4px) rotate(-.5deg);
+  box-shadow: 0 16px 28px rgba(112, 75, 75, 0.12);
+}
+
+.open-card-title {
+  font-family: "Caveat", cursive;
+  font-size: clamp(30px, 4vw, 46px);
+  color: #945d69;
+  line-height: 1;
+}
+
+.open-message {
+  display: none;
+  margin-top: 12px;
+  font-size: clamp(19px, 2.2vw, 26px);
+  line-height: 1.45;
+}
+
+.open-card.open .open-message {
+  display: block;
+  animation: softReveal .45s ease;
+}
+
+.chat-window {
+  max-width: 760px;
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+}
+
+.bubble {
+  max-width: 82%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: clamp(19px, 2.2vw, 25px);
+  line-height: 1.45;
+  box-shadow: 0 10px 20px rgba(112, 75, 75, 0.08);
+}
+
+.bubble.mahi {
+  justify-self: start;
+  background: rgba(255,255,255,0.78);
+}
+
+.bubble.ai {
+  justify-self: end;
+  background: rgba(229, 140, 160, 0.22);
+}
+
+.heart-float {
+  position: fixed;
+  top: 100vh;
+  pointer-events: none;
+  animation: floatHeart 2.4s ease-out forwards;
+  color: #c95f7b;
+  z-index: 50;
+}
+
+.future-letter {
+  max-width: 760px;
+  margin: 0 auto;
+  min-height: 420px;
+  padding: clamp(24px, 5vw, 54px);
+  border-radius: 18px;
+  background:
+    linear-gradient(rgba(255,249,246,0.92), rgba(249,239,234,0.92));
+  border: 1px solid rgba(190, 139, 133, 0.18);
+  box-shadow: 0 18px 38px rgba(112, 75, 75, 0.10);
+  font-family: "Caveat", cursive;
+  font-size: clamp(27px, 4vw, 46px);
+  line-height: 1.28;
+  color: #6f4f4a;
+  white-space: pre-line;
+}
+
+.typing-caret::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: .9em;
+  margin-left: 4px;
+  background: #a46b74;
+  animation: caretBlink .72s step-end infinite;
+}
+
+@keyframes softReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes caretBlink {
+  50% { opacity: 0; }
+}
+
+@keyframes floatHeart {
+  to {
+    transform: translateY(-120vh) rotate(18deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 680px) {
+  .love-page {
+    padding: 10px;
+    background-attachment: scroll;
+  }
+
+  .love-nav {
+    position: relative;
+    top: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .love-nav a {
+    white-space: nowrap;
+  }
+
+  .love-hero {
+    min-height: 190px;
+    padding: 34px 16px;
+  }
+
+  .open-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bubble {
+    max-width: 94%;
+  }
+
+  .future-letter {
+    min-height: 360px;
+  }
+}

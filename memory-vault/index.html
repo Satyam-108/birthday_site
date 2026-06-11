@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Vault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/new-pages.css">
+  <style>
+    .vault-section {
+      margin-top: 22px;
+    }
+
+    .vault-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .vault-heading p {
+      margin: 0;
+      font-size: clamp(18px, 2vw, 23px);
+      color: #8d6965;
+    }
+
+    .vault-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .vault-card {
+      position: relative;
+      min-height: 190px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 16px;
+      padding: 0;
+      background: rgba(255,255,255,0.72);
+      box-shadow: 0 14px 28px rgba(112, 75, 75, 0.10);
+      cursor: pointer;
+      transform: translateY(14px);
+      opacity: 0;
+      animation: vaultReveal .72s ease forwards;
+    }
+
+    .vault-card:nth-child(2) { animation-delay: .12s; }
+    .vault-card:nth-child(3) { animation-delay: .24s; }
+
+    .vault-card img,
+    .vault-card video {
+      width: 100%;
+      height: 250px;
+      display: block;
+      object-fit: cover;
+      background: #2a2423;
+      transition: transform .35s ease;
+    }
+
+    .vault-card:hover img,
+    .vault-card:hover video {
+      transform: scale(1.04);
+    }
+
+    .vault-label {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #6d4f4b;
+      background: rgba(255, 250, 247, 0.84);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    }
+
+    .viewer {
+      position: fixed;
+      inset: 0;
+      z-index: 50000;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(58, 42, 40, 0.72);
+      backdrop-filter: blur(4px);
+    }
+
+    .viewer.show {
+      display: grid;
+      animation: fadeIn .25s ease;
+    }
+
+    .viewer-panel {
+      width: min(100%, 860px);
+      position: relative;
+      border-radius: 18px;
+      background: rgba(255, 250, 247, 0.96);
+      padding: 14px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+    }
+
+    .viewer-panel img,
+    .viewer-panel video {
+      width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      display: block;
+      border-radius: 12px;
+      background: #231e1d;
+    }
+
+    .viewer-close {
+      position: absolute;
+      top: -14px;
+      right: -10px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      color: #fff;
+      background: #c95f7b;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+    }
+
+    @keyframes vaultReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .vault-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .vault-card img,
+      .vault-card video {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="love-page">
+    <div class="love-wrap">
+      <nav class="love-nav" aria-label="Mahi pages">
+        <a href="../index.html">Birthday</a>
+        <a href="../things-i-never-said/">Confessions</a>
+        <a href="../our-timeline/">Timeline</a>
+        <a class="active" href="../memory-vault/">Memory Vault</a>
+        <a href="../open-when/">Open When</a>
+        <a href="../mahi-ai/">Mahi AI</a>
+        <a href="../future-mahi/">Future Mahi</a>
+      </nav>
+
+      <section class="love-hero">
+        <div>
+          <p class="eyebrow">A safe little place for saved moments</p>
+          <h1>Memory Vault</h1>
+          <p class="hero-copy">Photos, screenshots, and videos that make the story feel alive.</p>
+        </div>
+      </section>
+
+      <section class="love-card vault-section">
+        <div class="vault-heading">
+          <h2>Photo Gallery</h2>
+          <p>Tap any photo to open it softly.</p>
+        </div>
+        <div class="vault-grid">
+          <button class="vault-card" data-image="../img1.jpg">
+            <img src="../img1.jpg" alt="Photo memory 1">
+            <span class="vault-label">Photo Memory</span>
+          </button>
+          <button class="vault-card" data-image="../img2.jpg">
+            <img src="../img2.jpg" alt="Photo memory 2">
+            <span class="vault-label">Soft Moment</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="love-card vault-section">
+        <div class="vault-heading">
+          <h2>Screenshot Gallery</h2>
+          <p>Little saved pieces of the story.</p>
+        </div>
+        <div class="vault-grid">
+          <button class="vault-card" data-image="../img3.jpg">
+            <img src="../img3.jpg" alt="Screenshot memory">
+            <span class="vault-label">Screenshot Memory</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="love-card vault-section">
+        <div class="vault-heading">
+          <h2>Video Gallery</h2>
+          <p>Ready for MP4 memories whenever you add them.</p>
+        </div>
+        <div class="vault-grid">
+          <button class="vault-card" data-video="../video1.mp4">
+            <video preload="metadata">
+              <source src="../video1.mp4" type="video/mp4">
+            </video>
+            <span class="vault-label">Favorite Video Call</span>
+          </button>
+          <button class="vault-card" data-video="../video2.mp4">
+            <video preload="metadata">
+              <source src="../video2.mp4" type="video/mp4">
+            </video>
+            <span class="vault-label">Favorite Fit Check</span>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="viewer" id="viewer" aria-hidden="true">
+    <div class="viewer-panel">
+      <button class="viewer-close" id="viewerClose" aria-label="Close">x</button>
+      <img id="viewerImage" alt="Memory attachment">
+      <video id="viewerVideo" controls></video>
+    </div>
+  </div>
+
+  <script src="../shared/new-pages.js"></script>
+  <script>
+    const viewer = document.getElementById("viewer");
+    const viewerImage = document.getElementById("viewerImage");
+    const viewerVideo = document.getElementById("viewerVideo");
+    const viewerClose = document.getElementById("viewerClose");
+
+    function closeViewer() {
+      viewer.classList.remove("show");
+      viewer.setAttribute("aria-hidden", "true");
+      viewerVideo.pause();
+      viewerVideo.removeAttribute("src");
+      viewerImage.removeAttribute("src");
+    }
+
+    document.querySelectorAll("[data-image]").forEach((button) => {
+      button.addEventListener("click", () => {
+        viewerVideo.style.display = "none";
+        viewerImage.style.display = "block";
+        viewerImage.src = button.dataset.image;
+        viewer.classList.add("show");
+        viewer.setAttribute("aria-hidden", "false");
+      });
+    });
+
+    document.querySelectorAll("[data-video]").forEach((button) => {
+      button.addEventListener("click", () => {
+        viewerImage.style.display = "none";
+        viewerVideo.style.display = "block";
+        viewerVideo.src = button.dataset.video;
+        viewer.classList.add("show");
+        viewer.setAttribute("aria-hidden", "false");
+        viewerVideo.play().catch(() => {});
+      });
+    });
+
+    viewerClose.addEventListener("click", closeViewer);
+    viewer.addEventListener("click", (event) => {
+      if (event.target === viewer) closeViewer();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeViewer();
+    });
+  </script>
+</body>
+</html>
