@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Final Mission</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/new-pages.css">
+  <link rel="stylesheet" href="../shared/treasure-hunt.css">
+  <style>
+    .mission-screen {
+      display: none;
+      min-height: 62vh;
+      place-items: center;
+      text-align: center;
+    }
+
+    .mission-screen.active {
+      display: grid;
+      animation: softReveal .55s ease;
+    }
+
+    .mission-card {
+      width: min(100%, 820px);
+      margin: 18px auto 0;
+      padding: clamp(24px, 5vw, 54px);
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at top left, rgba(231, 169, 180, 0.22), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(242, 209, 155, 0.24), transparent 34%),
+        rgba(255, 250, 247, 0.82);
+      border: 1px solid rgba(190, 139, 133, 0.18);
+      box-shadow: 0 18px 38px rgba(112, 75, 75, 0.10);
+    }
+
+    .mission-title {
+      font-family: "Caveat", cursive;
+      font-size: clamp(46px, 8vw, 92px);
+      color: #935d69;
+      line-height: 1;
+      margin: 0 0 12px;
+    }
+
+    .mission-copy {
+      font-size: clamp(22px, 3vw, 34px);
+      line-height: 1.42;
+      color: #6c4e49;
+    }
+
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 16px 0 22px;
+      text-align: left;
+    }
+
+    .quiz-option {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 13px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.66);
+      border: 1px solid rgba(190, 139, 133, 0.15);
+      font-size: clamp(18px, 2vw, 24px);
+    }
+
+    .quiz-option input {
+      width: 19px;
+      height: 19px;
+      accent-color: #c95f7b;
+    }
+
+    .loading-lines {
+      display: grid;
+      gap: 8px;
+      margin: 18px 0;
+      font-size: clamp(25px, 4vw, 42px);
+      font-family: "Caveat", cursive;
+    }
+
+    .progress-track {
+      width: min(100%, 460px);
+      height: 14px;
+      margin: 18px auto 0;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.68);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #e58ca0, #c95f7b);
+      animation: loadFill 3s ease forwards;
+    }
+
+    @keyframes loadFill {
+      to { width: 100%; }
+    }
+
+    .reveal-line {
+      min-height: 1.35em;
+      font-family: "Caveat", cursive;
+      font-size: clamp(36px, 7vw, 78px);
+      line-height: 1.08;
+      color: #704f4a;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .reveal-line.show {
+      animation: softReveal .55s ease forwards;
+    }
+
+    .proposal-text {
+      white-space: pre-line;
+      font-family: "Caveat", cursive;
+      font-size: clamp(30px, 5vw, 58px);
+      line-height: 1.22;
+      color: #6c4e49;
+    }
+
+    .proposal-question {
+      display: none;
+      margin-top: 20px;
+      font-family: "Caveat", cursive;
+      font-size: clamp(42px, 8vw, 88px);
+      line-height: 1;
+      color: #b05f77;
+      animation: heartPulse .95s ease-in-out infinite alternate;
+    }
+
+    .proposal-question.show {
+      display: block;
+    }
+
+    @keyframes heartPulse {
+      to { transform: scale(1.035); }
+    }
+
+    .answer-buttons {
+      position: relative;
+      min-height: 92px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .answer-buttons.show {
+      display: flex;
+    }
+
+    .no-btn {
+      position: relative;
+    }
+
+    .success-status {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.62);
+      font-size: clamp(22px, 3vw, 32px);
+    }
+
+    .secret-message {
+      display: none;
+      margin-top: 18px;
+      font-family: "Caveat", cursive;
+      font-size: clamp(30px, 5vw, 58px);
+      line-height: 1.2;
+      color: #935d69;
+      white-space: pre-line;
+    }
+
+    .secret-message.show {
+      display: block;
+      animation: softReveal .7s ease;
+    }
+
+    .mission-confetti {
+      position: fixed;
+      top: -20px;
+      z-index: 60000;
+      pointer-events: none;
+      animation: missionFall linear forwards;
+    }
+
+    @keyframes missionFall {
+      to {
+        transform: translateY(115vh) rotate(420deg);
+        opacity: .92;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .quiz-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="love-page">
+    <div class="love-wrap">
+      <nav class="love-nav" aria-label="Mahi pages">
+        <a href="../treasure-hunt/">Treasure Hunt</a>
+        <a href="../index.html">Birthday</a>
+        <a href="../things-i-never-said/">Confessions</a>
+        <a href="../our-timeline/">Timeline</a>
+        <a href="../memory-vault/">Memory Vault</a>
+      </nav>
+
+      <section class="mission-screen active" id="lockedScreen">
+        <div class="mission-card">
+          <div class="mission-title">Final Mission Locked</div>
+          <div class="mission-copy">Find all 7 hidden golgappas first. This page is waiting for Mahi properly.</div>
+          <br>
+          <a class="soft-btn" href="../treasure-hunt/">Back To Treasure Hunt</a>
+        </div>
+      </section>
+
+      <section class="mission-screen" id="introScreen">
+        <div class="mission-card">
+          <div class="mission-title">&#127942; Congratulations Mahi!</div>
+          <div class="mission-copy">You found every clue.<br>One final challenge remains.</div>
+          <br>
+          <button class="soft-btn" id="beginMission">Begin Final Mission</button>
+        </div>
+      </section>
+
+      <section class="mission-screen" id="quizScreen">
+        <div class="mission-card">
+          <div class="mission-title">Build Your Perfect Boy</div>
+          <h2>What should he do?</h2>
+          <div class="quiz-grid">
+            <label class="quiz-option"><input type="checkbox"> Listen to your random stories</label>
+            <label class="quiz-option"><input type="checkbox"> Appreciate every fit check</label>
+            <label class="quiz-option"><input type="checkbox"> Remember important dates</label>
+            <label class="quiz-option"><input type="checkbox"> Send cute messages</label>
+            <label class="quiz-option"><input type="checkbox"> Love you endlessly</label>
+          </div>
+          <h2>Special Skills</h2>
+          <div class="quiz-grid">
+            <label class="quiz-option"><input type="checkbox"> Makes websites for you</label>
+            <label class="quiz-option"><input type="checkbox"> Gets emotional over 7 June, 5:48 AM</label>
+            <label class="quiz-option"><input type="checkbox"> Thinks you're cute when angry</label>
+            <label class="quiz-option"><input type="checkbox"> Loves cheesecake and rasgulla gifts</label>
+            <label class="quiz-option"><input type="checkbox"> Loves Mahi</label>
+          </div>
+          <button class="soft-btn" id="analyzeResults">Analyze Results</button>
+        </div>
+      </section>
+
+      <section class="mission-screen" id="loadingScreen">
+        <div class="mission-card">
+          <div class="loading-lines">
+            <span>Analyzing...</span>
+            <span>Searching...</span>
+            <span>Calculating...</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill"></div></div>
+        </div>
+      </section>
+
+      <section class="mission-screen" id="matchScreen">
+        <div class="mission-card">
+          <div class="mission-title">100% Match Found</div>
+          <div class="mission-copy">Name:<br><strong>Satyam</strong><br><br>Status:<br>Completely in love with Mahi &#10084;</div>
+          <br>
+          <button class="soft-btn" id="continueReveal">Continue</button>
+        </div>
+      </section>
+
+      <section class="mission-screen" id="revealScreen">
+        <div class="mission-card">
+          <div class="reveal-line" id="revealLine"></div>
+        </div>
+      </section>
+
+      <section class="mission-screen" id="proposalScreen">
+        <div class="mission-card">
+          <div class="proposal-text">Mahi,
+
+You became one of my favourite parts of every day.
+
+You make ordinary days feel special.
+
+You make me smile without trying.
+
+You make me look forward to tomorrow.
+
+And honestly...
+
+I don't want this website to be the only memory we create together.</div>
+          <div class="proposal-question" id="proposalQuestion">Will you officially be my girlfriend?</div>
+          <div class="answer-buttons" id="answerButtons">
+            <button class="soft-btn" id="yesBtn">YES &#10084;</button>
+            <button class="soft-btn gold-btn no-btn" id="noBtn">NO</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="mission-screen" id="successScreen">
+        <div class="mission-card">
+          <div class="mission-title">YAYYYYY &#10084;</div>
+          <div class="mission-copy">Mission Successful</div>
+          <div class="success-status">Objective Updated:<br>Take care of Mahi forever.</div>
+          <div class="success-status" id="relationshipStatus"></div>
+          <div class="secret-message" id="secretMessage">You know what's funny?
+
+The treasure wasn't hidden in the website.
+
+It was the girl searching for it. &#10084;</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../shared/treasure-hunt.js"></script>
+  <script>
+    const screens = {
+      locked: document.getElementById("lockedScreen"),
+      intro: document.getElementById("introScreen"),
+      quiz: document.getElementById("quizScreen"),
+      loading: document.getElementById("loadingScreen"),
+      match: document.getElementById("matchScreen"),
+      reveal: document.getElementById("revealScreen"),
+      proposal: document.getElementById("proposalScreen"),
+      success: document.getElementById("successScreen")
+    };
+
+    const revealLines = [
+      "Mahi...",
+      "Every clue led here.",
+      "Every page.",
+      "Every memory.",
+      "Every little surprise.",
+      "Because there was something I wanted to ask you."
+    ];
+
+    function showScreen(name) {
+      Object.values(screens).forEach((screen) => screen.classList.remove("active"));
+      screens[name].classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function startIfUnlocked() {
+      if (isTreasureComplete()) {
+        showScreen("intro");
+      } else {
+        showScreen("locked");
+      }
+    }
+
+    function runLoading() {
+      showScreen("loading");
+      setTimeout(() => showScreen("match"), 3100);
+    }
+
+    async function runReveal() {
+      showScreen("reveal");
+      const target = document.getElementById("revealLine");
+      for (const line of revealLines) {
+        target.classList.remove("show");
+        await wait(260);
+        target.textContent = line;
+        target.classList.add("show");
+        await wait(1150);
+      }
+      showScreen("proposal");
+      setTimeout(() => {
+        document.getElementById("proposalQuestion").classList.add("show");
+        document.getElementById("answerButtons").classList.add("show");
+      }, 900);
+    }
+
+    function wait(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function moveNoButton() {
+      const button = document.getElementById("noBtn");
+      button.textContent = "Nice try";
+      button.style.position = "relative";
+      button.style.left = `${Math.floor(Math.random() * 140) - 70}px`;
+      button.style.top = `${Math.floor(Math.random() * 80) - 40}px`;
+    }
+
+    function launchMissionConfetti() {
+      const items = ["&#10084;", "&#10048;", "&#10047;", "&#10024;", "&#9829;"];
+      for (let i = 0; i < 70; i++) {
+        const piece = document.createElement("div");
+        piece.className = "mission-confetti";
+        piece.innerHTML = items[Math.floor(Math.random() * items.length)];
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.fontSize = 18 + Math.random() * 20 + "px";
+        piece.style.animationDuration = 2.2 + Math.random() * 2.8 + "s";
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 5600);
+      }
+    }
+
+    function acceptProposal() {
+      const acceptedAt = new Date();
+      localStorage.setItem(ACCEPTANCE_KEY, JSON.stringify({
+        accepted: true,
+        date: acceptedAt.toLocaleDateString(),
+        time: acceptedAt.toLocaleTimeString()
+      }));
+
+      launchMissionConfetti();
+      showScreen("success");
+      document.getElementById("relationshipStatus").innerHTML =
+        `Relationship Status:<br>Mahi Said YES &#10084;<br><br>Date: ${acceptedAt.toLocaleDateString()}<br>Time: ${acceptedAt.toLocaleTimeString()}`;
+
+      setTimeout(() => {
+        document.getElementById("secretMessage").classList.add("show");
+      }, 10000);
+    }
+
+    document.getElementById("beginMission").addEventListener("click", () => showScreen("quiz"));
+    document.getElementById("analyzeResults").addEventListener("click", runLoading);
+    document.getElementById("continueReveal").addEventListener("click", runReveal);
+    document.getElementById("yesBtn").addEventListener("click", acceptProposal);
+    document.getElementById("noBtn").addEventListener("mouseenter", moveNoButton);
+    document.getElementById("noBtn").addEventListener("touchstart", (event) => {
+      event.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+    document.getElementById("noBtn").addEventListener("click", moveNoButton);
+
+    startIfUnlocked();
+  </script>
+</body>
+</html>

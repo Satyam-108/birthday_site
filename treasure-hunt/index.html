@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Mahi Treasure Hunt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/new-pages.css">
+  <link rel="stylesheet" href="../shared/treasure-hunt.css">
+  <style>
+    .hunt-panel {
+      max-width: 740px;
+      margin: 18px auto 0;
+      text-align: center;
+    }
+
+    .hunt-lock {
+      font-size: clamp(44px, 8vw, 82px);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .hunt-message {
+      white-space: pre-line;
+      font-family: "Caveat", cursive;
+      font-size: clamp(30px, 5vw, 58px);
+      line-height: 1.2;
+      color: #6c4e49;
+    }
+
+    .hunt-progress {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 22px;
+      padding: 12px 24px;
+      border-radius: 999px;
+      color: #fff;
+      background: linear-gradient(135deg, #e58ca0, #c95f7b);
+      box-shadow: 0 12px 26px rgba(112, 75, 75, 0.14);
+      font-size: clamp(22px, 3vw, 32px);
+    }
+
+    .hunt-links {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .hunt-links a {
+      color: #765652;
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.62);
+      box-shadow: 0 10px 20px rgba(112, 75, 75, 0.07);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .hunt-links a:hover {
+      transform: translateY(-2px);
+      background: rgba(226, 154, 169, 0.24);
+    }
+
+    .unlock-box {
+      margin-top: 22px;
+      animation: softReveal .55s ease;
+    }
+
+    @media (max-width: 680px) {
+      .hunt-links {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="love-page">
+    <div class="love-wrap">
+      <nav class="love-nav" aria-label="Mahi pages">
+        <a href="../index.html">Birthday</a>
+        <a href="../things-i-never-said/">Confessions</a>
+        <a href="../our-timeline/">Timeline</a>
+        <a href="../memory-vault/">Memory Vault</a>
+        <a href="../open-when/">Open When</a>
+        <a href="../mahi-ai/">Mahi AI</a>
+        <a href="../future-mahi/">Future Mahi</a>
+      </nav>
+
+      <section class="love-hero">
+        <div>
+          <div class="hunt-lock">&#128272;</div>
+          <h1>A Message For Mahi</h1>
+        </div>
+      </section>
+
+      <section class="love-card hunt-panel">
+        <div class="hunt-message">Somewhere in this website,
+I hid 7 pieces of something important.
+
+Find them all.
+
+Love,
+Satyam &#10084;</div>
+
+        <div class="hunt-progress" data-treasure-progress>0/7 Golgappas Found</div>
+
+        <div class="hunt-links">
+          <a href="../things-i-never-said/">Search Confessions</a>
+          <a href="../our-timeline/">Search Timeline</a>
+          <a href="../open-when/">Search Open When</a>
+          <a href="../future-mahi/">Search Future Mahi</a>
+          <a href="../memory-vault/">Search Memory Vault</a>
+          <a href="../mahi-ai/">Search Mahi AI</a>
+        </div>
+
+        <div class="unlock-box" data-treasure-unlock hidden>
+          <a class="soft-btn" href="../final-mission/">Unlock Final Mission</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <button class="treasure-heart pos-secret" data-treasure-heart="secret-start" aria-label="Hidden golgappa">&#129375;</button>
+  <script src="../shared/new-pages.js"></script>
+  <script src="../shared/treasure-hunt.js"></script>
+</body>
+</html>

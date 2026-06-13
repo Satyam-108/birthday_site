@@ -1,0 +1,72 @@
+.treasure-heart {
+  position: fixed;
+  z-index: 30000;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  color: rgba(151, 99, 109, 0.76);
+  background: rgba(255, 250, 247, 0.34);
+  box-shadow: 0 8px 18px rgba(112, 75, 75, 0.08);
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 30px;
+  transition: transform .2s ease, opacity .2s ease, background .2s ease;
+}
+
+.treasure-heart:hover {
+  transform: scale(1.12) rotate(-8deg);
+  background: rgba(229, 140, 160, 0.20);
+}
+
+.treasure-heart.found {
+  opacity: .42;
+  pointer-events: none;
+}
+
+.treasure-heart.pos-confessions { right: 22px; bottom: 84px; }
+.treasure-heart.pos-timeline { left: 24px; bottom: 82px; }
+.treasure-heart.pos-open-when { right: 18px; top: 112px; }
+.treasure-heart.pos-future { left: 20px; top: 118px; }
+.treasure-heart.pos-vault { right: 28px; bottom: 104px; }
+.treasure-heart.pos-ai { left: 22px; bottom: 96px; }
+.treasure-heart.pos-secret { right: 18px; bottom: 22px; }
+
+.treasure-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 50000;
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0;
+  padding: 12px 20px;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, #e58ca0, #c95f7b);
+  box-shadow: 0 12px 26px rgba(112, 75, 75, 0.20);
+  font-family: "Patrick Hand", cursive;
+  font-size: 20px;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.treasure-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 680px) {
+  .treasure-heart {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    line-height: 28px;
+  }
+
+  .treasure-heart.pos-confessions,
+  .treasure-heart.pos-timeline,
+  .treasure-heart.pos-vault,
+  .treasure-heart.pos-ai {
+    bottom: 72px;
+  }
+}
