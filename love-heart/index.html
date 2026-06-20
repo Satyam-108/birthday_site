@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love Heart For Mahi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      color: #ffe8ef;
+      font-family: "Patrick Hand", cursive;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255, 146, 181, 0.20), transparent 28%),
+        radial-gradient(circle at 20% 68%, rgba(223, 96, 138, 0.14), transparent 24%),
+        radial-gradient(circle at 82% 56%, rgba(255, 205, 223, 0.10), transparent 24%),
+        linear-gradient(180deg, #100911 0%, #261120 48%, #0d080f 100%);
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: clamp(18px, 4vw, 42px);
+      isolation: isolate;
+    }
+
+    .page::before {
+      content: "";
+      position: fixed;
+      inset: auto 50% 18%;
+      width: min(92vw, 760px);
+      height: min(92vw, 760px);
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 163, 195, 0.24), rgba(255, 120, 166, 0.10) 46%, transparent 70%);
+      filter: blur(18px);
+      z-index: -1;
+    }
+
+    .heart-stage {
+      position: relative;
+      width: min(96vw, 980px);
+      height: min(68vh, 650px);
+      margin: auto;
+    }
+
+    .word {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      opacity: 0;
+      color: rgba(255, 223, 232, 0.92);
+      font-size: var(--size);
+      white-space: nowrap;
+      text-shadow:
+        0 0 10px rgba(255, 134, 174, 0.70),
+        0 0 22px rgba(255, 134, 174, 0.35);
+      transform: translate(-50%, -50%) scale(.35);
+      animation: formHeart var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+      will-change: transform, opacity;
+    }
+
+    .word.strong {
+      color: #ffd3df;
+      text-shadow:
+        0 0 14px rgba(255, 170, 200, 0.92),
+        0 0 34px rgba(255, 107, 156, 0.48);
+    }
+
+    .copy {
+      position: relative;
+      z-index: 4;
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+      padding-bottom: clamp(8px, 2vw, 18px);
+    }
+
+    .line {
+      margin: 0;
+      color: #ffdbe5;
+      font-family: "Caveat", cursive;
+      font-size: clamp(31px, 5vw, 62px);
+      line-height: 1.05;
+      text-shadow: 0 0 24px rgba(255, 124, 164, 0.26);
+    }
+
+    .secret {
+      margin: 10px 0 0;
+      opacity: 0;
+      color: rgba(255, 232, 238, 0.88);
+      font-size: clamp(22px, 3vw, 34px);
+      transform: translateY(12px);
+      transition: opacity .85s ease, transform .85s ease;
+    }
+
+    .secret.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+      padding: 12px 24px;
+      border: 1px solid rgba(255, 218, 228, 0.42);
+      border-radius: 999px;
+      color: #fff4f7;
+      text-decoration: none;
+      background: linear-gradient(135deg, rgba(220, 86, 130, 0.88), rgba(255, 168, 194, 0.84));
+      box-shadow:
+        0 0 24px rgba(255, 127, 166, 0.34),
+        0 14px 34px rgba(77, 20, 45, 0.26),
+        inset 0 1px 0 rgba(255,255,255,0.30);
+      font-size: clamp(18px, 2.2vw, 24px);
+      transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+    }
+
+    .back-button:hover {
+      transform: translateY(-3px) scale(1.03);
+      filter: brightness(1.06);
+      box-shadow:
+        0 0 34px rgba(255, 127, 166, 0.48),
+        0 18px 38px rgba(77, 20, 45, 0.30),
+        inset 0 1px 0 rgba(255,255,255,0.38);
+    }
+
+    .particle {
+      position: fixed;
+      left: var(--left);
+      top: 110vh;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      background: rgba(255, 192, 212, 0.76);
+      box-shadow: 0 0 16px rgba(255, 151, 184, 0.70);
+      animation: floatParticle var(--duration) linear infinite;
+      animation-delay: var(--delay);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes formHeart {
+      0% {
+        opacity: 0;
+        transform: translate(var(--start-x), var(--start-y)) scale(.35) rotate(var(--start-rot));
+      }
+      18%, 68% {
+        opacity: var(--opacity);
+        transform: translate(var(--x), var(--y)) scale(1) rotate(var(--rot));
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--end-x), var(--end-y)) scale(.45) rotate(var(--end-rot));
+      }
+    }
+
+    @keyframes floatParticle {
+      to {
+        transform: translate3d(var(--drift), -125vh, 0);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        overflow-y: auto;
+      }
+
+      .page {
+        min-height: 100svh;
+        padding: 16px;
+      }
+
+      .heart-stage {
+        height: 58vh;
+        width: 100%;
+      }
+
+      .word {
+        font-size: calc(var(--size) * .82);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="heart-stage" id="heartStage" aria-label="Animated love words forming a heart"></section>
+
+    <section class="copy" aria-live="polite">
+      <p class="line">Every word here is a thought I've had about you.</p>
+      <p class="secret" id="secretLine">And there are still more I haven't found words for &#10084;</p>
+      <a class="back-button" href="../index.html">Back to Mahi's World</a>
+    </section>
+  </main>
+
+  <script>
+    const stage = document.getElementById("heartStage");
+    const phrases = [
+      "Mahi &#10084;",
+      "I love you",
+      "My favorite person",
+      "Forever us",
+      "Miss you",
+      "Lucky to have you"
+    ];
+
+    const points = [];
+    const totalWords = 230;
+
+    for (let i = 0; i < totalWords; i++) {
+      const t = (Math.PI * 2 * i) / totalWords;
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+      points.push({ x, y });
+    }
+
+    points.sort(() => Math.random() - 0.5);
+
+    points.forEach((point, index) => {
+      const word = document.createElement("span");
+      const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+      const size = 14 + Math.random() * 12;
+      const scale = Math.min(stage.clientWidth, stage.clientHeight) / 36;
+      const x = point.x * scale;
+      const y = -point.y * scale;
+      const startX = -stage.clientWidth / 2 + Math.random() * stage.clientWidth;
+      const startY = -stage.clientHeight / 2 + Math.random() * stage.clientHeight;
+      const endX = -stage.clientWidth / 2 + Math.random() * stage.clientWidth;
+      const endY = -stage.clientHeight / 2 + Math.random() * stage.clientHeight;
+
+      word.className = `word${index % 13 === 0 ? " strong" : ""}`;
+      word.innerHTML = phrase;
+      word.style.setProperty("--x", `${x}px`);
+      word.style.setProperty("--y", `${y}px`);
+      word.style.setProperty("--start-x", `${startX}px`);
+      word.style.setProperty("--start-y", `${startY}px`);
+      word.style.setProperty("--end-x", `${endX}px`);
+      word.style.setProperty("--end-y", `${endY}px`);
+      word.style.setProperty("--rot", `${-8 + Math.random() * 16}deg`);
+      word.style.setProperty("--start-rot", `${-32 + Math.random() * 64}deg`);
+      word.style.setProperty("--end-rot", `${-36 + Math.random() * 72}deg`);
+      word.style.setProperty("--size", `${size}px`);
+      word.style.setProperty("--opacity", `${0.62 + Math.random() * 0.35}`);
+      word.style.setProperty("--duration", `${7 + Math.random() * 4}s`);
+      word.style.setProperty("--delay", `${Math.random() * 2.5}s`);
+      stage.appendChild(word);
+    });
+
+    for (let i = 0; i < 70; i++) {
+      const particle = document.createElement("span");
+      particle.className = "particle";
+      particle.style.setProperty("--left", `${Math.random() * 100}vw`);
+      particle.style.setProperty("--size", `${3 + Math.random() * 5}px`);
+      particle.style.setProperty("--duration", `${8 + Math.random() * 9}s`);
+      particle.style.setProperty("--delay", `${Math.random() * 10}s`);
+      particle.style.setProperty("--drift", `${-36 + Math.random() * 72}px`);
+      document.body.appendChild(particle);
+    }
+
+    setTimeout(() => {
+      document.getElementById("secretLine").classList.add("show");
+    }, 6000);
+  </script>
+  <script src="../shared/music-manager.js"></script>
+</body>
+</html>

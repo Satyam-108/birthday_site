@@ -1159,6 +1159,7 @@
     <a href="mahi-ai/">Mahi AI</a>
     <a href="future-mahi/">Future Mahi</a>
     <a href="treasure-hunt/">Treasure Hunt</a>
+    <a href="tulips-for-mahi/">&#127799; Secret Tulips</a>
   </nav>
 
   <div class="page">
@@ -1493,7 +1494,9 @@
       document.getElementById("wishNote").innerHTML = "The candles are waiting for her wish.";
       document.getElementById("blowButton").disabled = false;
       document.getElementById("continueLetterButton").classList.remove("show");
-      playBirthdayTune();
+      if (!window.MahiMusic || window.MahiMusic.isEnabled()) {
+        playBirthdayTune();
+      }
       confettiBurst(34);
       setTimeout(() => confettiBurst(24), 850);
     }
@@ -1502,7 +1505,9 @@
       if (!candlesBlown) return;
       stopBirthdayTune();
       const music = document.getElementById("bgmusic");
-      music.play().catch(() => {});
+      if (!window.MahiMusic || window.MahiMusic.isEnabled()) {
+        music.play().catch(() => {});
+      }
       showScreen("letterScreen");
     }
 
@@ -1850,6 +1855,13 @@
         setTimeout(() => confetti.remove(), 5500);
       }
     }
+
+    window.addEventListener("mahi-music-toggle", (event) => {
+      if (!event.detail.enabled) {
+        stopBirthdayTune();
+      }
+    });
   </script>
+  <script src="shared/music-manager.js"></script>
 </body>
 </html>
